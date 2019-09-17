@@ -46,7 +46,7 @@ services:
       - GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}
       - GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}
       - GRAYLOG_ROOT_TIMEZONE=Europe/Berlin
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_HTTP_EXTERNAL_URI=https://logs.archi-lab.io/
       - GRAYLOG_MONGODB_URI=mongodb://mongodb:27017/graylog
       
     depends_on:
