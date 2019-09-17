@@ -1,0 +1,75 @@
+version: "3.7"
+
+services:
+
+  mongodb:
+    image: mongo:4.2.0
+    volumes:
+      - mongodb-data:/data/db
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+
+  elasticsearch:
+    image: elasticsearch:6.8.2
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    deploy:
+      restart_policy:
+          condition: any
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+      resources:
+        limits:
+          memory: 1G
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+
+  graylog:
+    image: graylog/graylog:3.1
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      - GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}
+      - GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}
+      - GRAYLOG_ROOT_TIMEZONE=Europe/Berlin
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_MONGODB_URI=mongodb://mongodb:27017/graylog
+      
+    depends_on:
+      - mongodb
+      - elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Syslog TCP
+      - 1514:1514
+      # Syslog UDP
+      - 1514:1514/udp
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+    volumes:
+      - graylog-journal:/usr/share/graylog/data/journal
+      - graylog-plugins:/usr/share/graylog/plugin
+
+volumes:
+
+  mongodb-data:
+  elasticsearch-data:
+  graylog-journal:
+  graylog-plugins:

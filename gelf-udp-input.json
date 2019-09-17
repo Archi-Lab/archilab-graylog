@@ -1,0 +1,13 @@
+{
+    "title": "GELF UDP",
+    "global": true,
+    "type": "org.graylog2.inputs.gelf.udp.GELFUDPInput",
+    "configuration": {
+        "recv_buffer_size": 26214400,
+        "port": 12201,
+        "number_worker_threads": 4,
+        "override_source": null,
+        "bind_address": "0.0.0.0",
+        "decompress_size_limit": 8388608
+    }
+}
