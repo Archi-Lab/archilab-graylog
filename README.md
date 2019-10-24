@@ -16,5 +16,5 @@ echo "<HASH>" > ./secrets/GRAYLOG_ROOT_PASSWORD_SHA2
 Then start the service:
 
 ```bash
-./run.sh
+./run
 ```
